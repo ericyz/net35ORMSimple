@@ -43,8 +43,6 @@ namespace SimpleORM.Tests {
         /// </summary>
         [TestMethod]
         public void DeleteSinglePrimaryKeyRecordTest() {
-            // Input
-            // Expected Output
         }
         #endregion
         #region CompositeKeyTest
@@ -70,8 +68,6 @@ namespace SimpleORM.Tests {
         /// </summary>
         [TestMethod]
         public void UpdateCompositeKeyRecordTest() {
-            // Input
-            // Expected Output
         }
 
         /// <summary>
@@ -79,8 +75,6 @@ namespace SimpleORM.Tests {
         /// </summary>
         [TestMethod]
         public void DeleteCompositeKeyRecordTest() {
-            // Input
-            // Expected Output
         }
         #endregion
 

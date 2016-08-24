@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace SimpleORM.Exception {
+namespace SimpleORM.CustomException {
     public class SimpleORMException : System.Exception, ISerializable {
         public SimpleORMException() { }
 
@@ -15,5 +15,4 @@ namespace SimpleORM.Exception {
 
         public SimpleORMException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-}
 }

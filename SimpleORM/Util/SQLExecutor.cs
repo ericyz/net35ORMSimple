@@ -26,8 +26,8 @@ namespace SimpleORM.Util {
                     DataSet ds = db.ExecuteDataSet(cmd);
                     return ds.Tables[0].Copy();
                 }
-            } catch (Exception ex) {
-                throw new Exception("Error Occurs in function:  " + System.Reflection.MethodInfo.GetCurrentMethod().ToString(), ex);
+            } catch (System.Exception ex) {
+                throw new System.Exception("Error Occurs in function:  " + System.Reflection.MethodInfo.GetCurrentMethod().ToString(), ex);
             }
         }
 
@@ -52,8 +52,8 @@ namespace SimpleORM.Util {
                     cmd.Connection.Close();
                     return ret;
                 }
-            } catch (Exception ex) {
-                throw new Exception("Error Occurs in function:  " + System.Reflection.MethodInfo.GetCurrentMethod().ToString() , ex);
+            } catch (System.Exception ex) {
+                throw new System.Exception("Error Occurs in function:  " + System.Reflection.MethodInfo.GetCurrentMethod().ToString() , ex);
             }
         }
     }
