@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 
 namespace SimpleORM.Util {
@@ -24,6 +25,9 @@ namespace SimpleORM.Util {
                         }
                     }
                     DataSet ds = db.ExecuteDataSet(cmd);
+                    var index = query.ToUpper().IndexOf("from".ToUpper());
+                    var tableName = Regex.Match(query.Substring(index + "from".Length), @"^\s*(\w*)").Groups[1].Value;
+                    ds.Tables[0].TableName = tableName;
                     return ds.Tables[0].Copy();
                 }
             } catch (System.Exception ex) {

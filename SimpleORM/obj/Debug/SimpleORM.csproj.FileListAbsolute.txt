@@ -1,4 +1,3 @@
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\obj\Debug\SimpleORM.csprojResolveAssemblyReference.cache
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\SimpleORM.dll
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\SimpleORM.pdb
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll

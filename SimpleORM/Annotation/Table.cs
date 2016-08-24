@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace SimpleORM.Annotation {
-    public class Table : System.Attribute {
+    public class Table : Attribute {
 
         public string Name { get; set; }
 

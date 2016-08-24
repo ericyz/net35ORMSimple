@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,11 +9,11 @@ using SimpleORM.Annotation;
 
 namespace SimpleORM.Util {
     public class ORMUtil {
-//        public static void PrintReturnTypeByColumn(DataSet dsOut) {
-//            for (int i = 0; i <= dsOut.Tables[0].Columns.Count - 1; i++) {
-//                Console.WriteLine(dsOut.Tables[0].Columns[i].ColumnName + ":  " + dsOut.Tables[0].Columns[i].DataType);
-//            }
-//        }
+        //        public static void PrintReturnTypeByColumn(DataSet dsOut) {
+        //            for (int i = 0; i <= dsOut.Tables[0].Columns.Count - 1; i++) {
+        //                Console.WriteLine(dsOut.Tables[0].Columns[i].ColumnName + ":  " + dsOut.Tables[0].Columns[i].DataType);
+        //            }
+        //        }
 
         #region model to dataset
         private static DataTable constructTable<T>(IList<T> records) {
@@ -265,11 +266,53 @@ namespace SimpleORM.Util {
             return sb.ToString();
         }
 
-        public static void PrintProperties(DataTable table) {
+        private static string GetModelDefinition(DataTable table) {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine("namespace SimpleORM.Model {");
+            sb.AppendLine(string.Format("\t[SimpleORM.Annotation.Table(\"{0}\")]", table.TableName));
+            sb.AppendLine(string.Format("\tpublic class {0}{{", table.TableName));
             for (int i = 0; i < table.Columns.Count - 1; i++) {
-                Console.WriteLine("[Column(\"{0}\")]", table.Columns[i].ColumnName);
-                Console.WriteLine("public {0} {1} {{get;set;}}", table.Columns[i].DataType.Name, table.Columns[i].ColumnName);
+                sb.AppendLine(string.Format("\t\t[SimpleORM.Annotation.Column(\"{0}\")]", table.Columns[i].ColumnName));
+                sb.AppendLine(string.Format("\t\tpublic {0} {1} {{get;set;}}", table.Columns[i].DataType.Name, table.Columns[i].ColumnName));
             }
+            sb.AppendLine("\t}");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        public static void GenerateClass(string connectionString, string sql)
+        {
+            DataTable table = SQLExecutor.GetDataTable(sql, connectionString);
+
+            var dataAccessFolder = string.Format("{0}\\DataAccess", Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName);
+            var modelFolder = string.Format("{0}\\Model", Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName);
+            
+            if (!Directory.Exists(dataAccessFolder))
+            {
+                Directory.CreateDirectory(dataAccessFolder);
+            }
+            if (!Directory.Exists(modelFolder))
+            {
+                Directory.CreateDirectory(modelFolder);
+            } 
+
+            string modelClass = GetModelDefinition(table);
+            string daoClass = GetDataAccessDefinition(table);
+            File.WriteAllText(string.Format("{0}\\{1}Service.cs", dataAccessFolder, table.TableName), daoClass);
+            File.WriteAllText(string.Format("{0}\\{1}.cs", modelFolder, table.TableName), modelClass);
+        }
+
+        private static string GetDataAccessDefinition(DataTable table)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("using SimpleORM.Model;");
+            sb.AppendLine("namespace SimpleORM.DataAccess {");
+            sb.AppendLine(string.Format("\tpublic class {0}Service : DataAccess<{1}>{{", table.TableName, table.TableName));
+            sb.AppendLine(string.Format("\t\tpublic {0}Service(string connStr): base(connStr){{}}", table.TableName));
+            sb.AppendLine("\t}");
+            sb.AppendLine("}");
+            return sb.ToString();
         }
     }
 }
