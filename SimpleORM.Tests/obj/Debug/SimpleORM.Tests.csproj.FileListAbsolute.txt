@@ -4,3 +4,8 @@ C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\b
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\obj\Debug\SimpleORM.Tests.csprojResolveAssemblyReference.cache
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\obj\Debug\SimpleORM.Tests.dll
 C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\obj\Debug\SimpleORM.Tests.pdb
+C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\bin\Debug\SimpleORM.dll
+C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.dll
+C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll
+C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\bin\Debug\Microsoft.Practices.ObjectBuilder2.dll
+C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM.Tests\bin\Debug\SimpleORM.pdb

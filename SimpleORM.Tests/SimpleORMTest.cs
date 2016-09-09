@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleORM.Util;
 
 namespace SimpleORM.Tests {
     [TestClass]
@@ -78,5 +79,12 @@ namespace SimpleORM.Tests {
         }
         #endregion
 
+        [TestMethod]
+        public void GenerateClassTest()
+        {
+            string connectionString = @"";
+            string sql = "SELECT * FROM Employee ";
+            SimpleORM.Util.ORMUtil.GenerateClass(connectionString,sql);
+        }
     }
 }

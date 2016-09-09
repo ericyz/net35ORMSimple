@@ -272,7 +272,7 @@ namespace SimpleORM.Util {
             sb.AppendLine("namespace SimpleORM.Model {");
             sb.AppendLine(string.Format("\t[SimpleORM.Annotation.Table(\"{0}\")]", table.TableName));
             sb.AppendLine(string.Format("\tpublic class {0}{{", table.TableName));
-            for (int i = 0; i < table.Columns.Count - 1; i++) {
+            for (int i = 0; i < table.Columns.Count; i++) {
                 sb.AppendLine(string.Format("\t\t[SimpleORM.Annotation.Column(\"{0}\")]", table.Columns[i].ColumnName));
                 sb.AppendLine(string.Format("\t\tpublic {0} {1} {{get;set;}}", table.Columns[i].DataType.Name, table.Columns[i].ColumnName));
             }

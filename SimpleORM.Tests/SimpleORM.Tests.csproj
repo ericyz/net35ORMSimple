@@ -53,6 +53,12 @@
     <Compile Include="SimpleORMTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleORM\SimpleORM.csproj">
+      <Project>{3DCCF3A1-A521-4B73-9B0C-7FC4EC40AEFC}</Project>
+      <Name>SimpleORM</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
