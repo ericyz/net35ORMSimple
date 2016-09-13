@@ -73,9 +73,9 @@ namespace SimpleORM.DataAccess {
         protected List<object> GetKeyParamArray(T model) {
             var objsKey = new List<object>();
             foreach (var prop in model.GetType().GetProperties()) {
-                foreach (var attr in prop.GetCustomAttributes(typeof(T), true)) {
+                foreach (var attr in prop.GetCustomAttributes(typeof(Key), true)) {
                     if (attr is Key) {
-                        objsKey.Add(attr);
+                        objsKey.Add(prop.GetValue(model, null));
                     }
                 }
             }
@@ -87,15 +87,6 @@ namespace SimpleORM.DataAccess {
         protected List<object> GetAllParamArrays(T model) {
             var objs = GetStatementParamArray(model);
             var objsKey = GetKeyParamArray(model);
-            foreach (var prop in model.GetType().GetProperties()) {
-                objs.Add(prop.GetValue(model, null));
-                foreach (var attr in prop.GetCustomAttributes(typeof(T), true)) {
-                    if (attr is Key) {
-                        objsKey.Add(prop.Name);
-                    }
-                }
-            }
-
             objs.AddRange(objsKey);
             return objs;
         }

@@ -37,21 +37,38 @@ namespace SampleApplication.Views {
 
         #endregion
         public EmployeeUpdateForm() {
-            InitializeComponent();
+            try {
+                InitializeComponent();
 
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;     // Disable resize
-            _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-            _employeeService = new EmployeeService(_connectionString);
+                this.FormBorderStyle = FormBorderStyle.FixedSingle;     // Disable resize
+                _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+                _employeeService = new EmployeeService(_connectionString);
+            } catch (Exception) {
+                MessageBox.Show(this, "Employee Update Form.");
+            }
+
         }
 
-        public EmployeeUpdateForm(string id):this()
-        {
-            _employeeToUpdate = _employeeService.ReadById(id);
+        public EmployeeUpdateForm(string id) : this() {
+            try {
+                _employeeToUpdate = _employeeService.ReadById(id);
+
+            } catch (Exception) {
+                MessageBox.Show(this, "Employee Update Form.");
+            }
         }
         private void EmployeeUpdateForm_Load(object sender, EventArgs e) {
-            LoadView();
-            _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-            _employeeService = new EmployeeService(_connectionString);
+            try
+            {
+                LoadView();
+                _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+                _employeeService = new EmployeeService(_connectionString);
+            } catch (Exception)
+            {
+
+                MessageBox.Show(this, "Employee Update Form.");
+            }
+           
         }
 
 
@@ -74,14 +91,13 @@ namespace SampleApplication.Views {
 
                 if (propertyInfo.PropertyType == typeof(DateTime)) {
                     control = new DateTimePicker();
-                    if (_employeeToUpdate != null)
-                    {
-                        ((DateTimePicker) control).Value = (DateTime) propertyInfo.GetValue(_employeeToUpdate, null);
+                    if (_employeeToUpdate != null) {
+                        ((DateTimePicker)control).Value = (DateTime)propertyInfo.GetValue(_employeeToUpdate, null);
                     }
                 } else if (propertyInfo.PropertyType == typeof(string)) {
                     control = new TextBox();
                     if (_employeeToUpdate != null) {
-                        control.Text = (string) propertyInfo.GetValue(_employeeToUpdate, null);
+                        control.Text = (string)propertyInfo.GetValue(_employeeToUpdate, null);
                     }
                 } else if (propertyInfo.PropertyType == typeof(int)) {
                     control = new TextBox();
@@ -96,7 +112,7 @@ namespace SampleApplication.Views {
                 if (propertyInfo.GetCustomAttributes(typeof(DataBaseGenerated), true).Length > 0) {
                     control.Enabled = false;
                 }
-               
+
                 this.Controls.Add(control);
                 i++;
             }
@@ -115,6 +131,7 @@ namespace SampleApplication.Views {
         }
 
         public void Btn_OnClick(object sender, EventArgs args) {
+            
             Debug.WriteLine("Button Click");
             try {
                 var btn = (Button)sender;
@@ -122,7 +139,7 @@ namespace SampleApplication.Views {
                     case "BtnSave":
 
                         var type = typeof(Employee);
-                        Employee employee = new Employee();
+                        Employee employee = _employeeToUpdate ?? new Employee();
 
                         foreach (var propertyInfo in type.GetProperties()) {
                             var txtName = string.Format("txt{0}", propertyInfo.Name);

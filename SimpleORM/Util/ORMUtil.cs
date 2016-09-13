@@ -149,13 +149,19 @@ namespace SimpleORM.Util {
             sb.Append(GetTableName(type));
             sb.Append(" SET ");
             var i = 0;
+            var skipCounter = 0;
             var count = type.GetProperties().Length;
             foreach (var p in type.GetProperties()) {
+                if (p.GetCustomAttributes(typeof(DataBaseGenerated), true).Length >0)
+                {
+                    skipCounter ++;
+                    continue;
+                }
                 sb.Append(GetFieldName(p));
                 sb.Append("= @");
                 sb.Append(++i);
 
-                if (i != count) {
+                if ((i+ skipCounter) != count) {
                     sb.Append(",");
                 }
             }
