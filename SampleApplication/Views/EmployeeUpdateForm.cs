@@ -26,6 +26,7 @@ namespace SampleApplication.Views {
         private readonly int TXT_X = 200;
         private readonly int TXT_Y = 30;
         private string _connectionString;
+        private Employee _employeeToUpdate;
 
         private EmployeeService _employeeService;
         #endregion
@@ -37,10 +38,16 @@ namespace SampleApplication.Views {
         #endregion
         public EmployeeUpdateForm() {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;     // Disable resize
 
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;     // Disable resize
+            _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            _employeeService = new EmployeeService(_connectionString);
         }
 
+        public EmployeeUpdateForm(string id):this()
+        {
+            _employeeToUpdate = _employeeService.ReadById(id);
+        }
         private void EmployeeUpdateForm_Load(object sender, EventArgs e) {
             LoadView();
             _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
@@ -67,10 +74,20 @@ namespace SampleApplication.Views {
 
                 if (propertyInfo.PropertyType == typeof(DateTime)) {
                     control = new DateTimePicker();
+                    if (_employeeToUpdate != null)
+                    {
+                        ((DateTimePicker) control).Value = (DateTime) propertyInfo.GetValue(_employeeToUpdate, null);
+                    }
                 } else if (propertyInfo.PropertyType == typeof(string)) {
                     control = new TextBox();
+                    if (_employeeToUpdate != null) {
+                        control.Text = (string) propertyInfo.GetValue(_employeeToUpdate, null);
+                    }
                 } else if (propertyInfo.PropertyType == typeof(int)) {
                     control = new TextBox();
+                    if (_employeeToUpdate != null) {
+                        control.Text = (int)propertyInfo.GetValue(_employeeToUpdate, null) + "";
+                    }
                 }
                 control.Name = txtName;
                 control.Location = new Point(2 * GAP_X + BUTTON_X, (i) * BUTTON_Y + GAP_Y * i + 30);
@@ -79,6 +96,7 @@ namespace SampleApplication.Views {
                 if (propertyInfo.GetCustomAttributes(typeof(DataBaseGenerated), true).Length > 0) {
                     control.Enabled = false;
                 }
+               
                 this.Controls.Add(control);
                 i++;
             }
@@ -124,7 +142,7 @@ namespace SampleApplication.Views {
                             }
                         }
                         _employeeService.AddOrUpdate(employee);
-
+                        this.Close();
                         break;
                 }
             } catch (Exception ex) {

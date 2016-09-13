@@ -19,7 +19,7 @@ namespace SampleApplication.Views {
         private IList<Employee> _employees;
         private EmployeeService _employeeService;
         private readonly string _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-        private readonly int BTN_X = 70;
+        private readonly int BTN_X = 120;
         private readonly int BTN_Y = 25;
         private readonly int LABEL_X = 150;
         private readonly int LABEL_Y = 25;
@@ -32,10 +32,17 @@ namespace SampleApplication.Views {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;     // Disable resize
             this.MaximizeBox = false;
             _connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            _employeeService = new EmployeeService(_connectionString);
 
         }
         #region formLifeCycle
-        private void EmployeeForm_Load(object sender, EventArgs e) {
+        private void EmployeeForm_Load(object sender, EventArgs e)
+        {
+            LoadForm();
+        }
+
+        private void LoadForm()
+        {
             LoadModel();
             LoadView();
         }
@@ -57,29 +64,46 @@ namespace SampleApplication.Views {
                             label.Width = LABEL_X;
                             label.Height = LABEL_Y;
                             label.Text = prop.Name;
-                            label.Location = new Point(GAP_X + LABEL_X, GAP_Y);
+                            label.Location = new Point(countX * LABEL_X + GAP_X, GAP_Y);
                             this.Controls.Add(label);
-                        } 
-                            string txtName = string.Format("txtField{0}{1}", prop.Name, countY);
-                            if (prop.GetCustomAttributes(typeof(DataBaseGenerated), true).Length == 0) {
-                                // Not Database Generated Key
-                                Control control = null;
-                                if (prop.PropertyType == typeof(DateTime)) {
-                                    control = new DateTimePicker();
-                                    ((DateTimePicker)control).Value = employee.DateOfBirth;
-                                } else if (prop.PropertyType == typeof(int)) {
-                                    control = new TextBox();
-                                    ((TextBox)control).Text = ((int)(prop.GetValue(employee, null) ?? "")).ToString();
-                                } else if (prop.PropertyType == typeof(string)) {
-                                    control = new TextBox();
-                                ((TextBox)control).Text = (string)(prop.GetValue(employee, null) ?? "");
-                                }
-                                control.Name = txtName;
-                                control.Location = new Point(GAP_X + (countX-1)*LABEL_X, GAP_Y + (countY+1) * LABEL_Y);
-                                this.Controls.Add(control);
                         }
+                        string txtName = string.Format("txtField{0}{1}", prop.Name, countY);
+
+                        // Not Database Generated Key
+                        Control control = null;
+                        if (prop.PropertyType == typeof(DateTime)) {
+                            control = new DateTimePicker();
+                            ((DateTimePicker)control).Value = employee.DateOfBirth;
+                        } else if (prop.PropertyType == typeof(int)) {
+                            control = new TextBox();
+                            ((TextBox)control).Text = ((int)(prop.GetValue(employee, null) ?? "")).ToString();
+                        } else if (prop.PropertyType == typeof(string)) {
+                            control = new TextBox();
+                            ((TextBox)control).Text = (string)(prop.GetValue(employee, null) ?? "");
+                        }
+                        control.Name = txtName;
+                        control.Location = new Point(countX * LABEL_X + GAP_X, GAP_Y + (countY + 1) * LABEL_Y);
+                        if (prop.GetCustomAttributes(typeof(DataBaseGenerated), true).Length > 0) {
+                            control.Enabled = false;
+                        }
+                        this.Controls.Add(control);
                         countX++;
                     }
+                    // Edit buttn
+                    Button btnUpdate = new Button();
+                    btnUpdate.Name = string.Format("BtnUpdate_{0}", employee.Id);
+                    btnUpdate.Text = "Update";
+                    btnUpdate.Click += Btn_OnClick;
+                    btnUpdate.Location = new Point((countX - 1) * LABEL_X + GAP_X * countX + BTN_X, GAP_Y + (countY + 1) * LABEL_Y);
+                    this.Controls.Add(btnUpdate);
+
+
+                    Button btnDelete = new Button();
+                    btnDelete.Name = string.Format("BtnDelete_{0}", employee.Id);
+                    btnDelete.Text = "Delete";
+                    btnDelete.Click += Btn_OnClick;
+                    btnDelete.Location = new Point((countX ) * LABEL_X + GAP_X * ( countX-2) + BTN_X, GAP_Y + (countY + 1) * LABEL_Y);
+                    this.Controls.Add(btnDelete);
                     countY++;
                 }
             }
@@ -89,24 +113,26 @@ namespace SampleApplication.Views {
             btnGenerate.Name = "BtnGenerate";
 
             if (_employees.Count == 0) {
-                this.Width = GAP_X * 2 + 2 * BTN_X;
-                this.Height = GAP_Y * 2 + 2 * BTN_Y;
+                this.Width = GAP_X * 3 + 2 * BTN_X;
+                this.Height = 2 * GAP_Y + BTN_Y;
             } else {
-                this.Width = GAP_X * (countX + 1) + LABEL_X * countX;
-                this.Height = GAP_Y * (countY + 2) + LABEL_X * countY + BTN_Y;
+                this.Width = LABEL_X * countX + (countX + 1) * GAP_X + (GAP_X + BTN_X);
+                this.Height = GAP_Y * (countY + 3) + LABEL_Y * (countY + 1) + BTN_Y;
             }
 
             var btnAdd = new Button { Text = "Add Employee", Width = BTN_X, Height = BTN_Y };
             btnAdd.Name = "BtnAdd";
-            btnAdd.Location = new Point(this.Width-(GAP_X * 3)- BTN_X, (countY + 2) * GAP_Y + countY * BTN_Y);
+            btnAdd.Location = new Point(this.Width * 2 / 3, (countY + 2) * GAP_Y + countY * BTN_Y);
             btnAdd.Click += Btn_OnClick;
             this.Controls.Add(btnAdd);
 
-            btnGenerate.Location = new Point(GAP_X*3, (countY+2)*GAP_Y +countY* BTN_Y);
+            btnGenerate.Location = new Point(this.Width / 3 - BTN_X / 2, (countY + 2) * GAP_Y + countY * BTN_Y);
             btnGenerate.Click += Btn_OnClick;
+            this.Controls.Add(btnGenerate);
 
-            this.Width += 30;
-            this.Height += 30;
+
+            this.Width += 60;       // Offset X
+            this.Height += 60;      // Offset Y
             this.Controls.Add(btnGenerate);
 
 
@@ -116,23 +142,56 @@ namespace SampleApplication.Views {
             _employees = new EmployeeService(_connectionString).ReadAll();
             Debug.WriteLine(string.Format("Employee count = {0}", _employees.Count));
         }
+
+        private void ReloadForm()
+        {
+                this.Controls.Clear();
+                this.LoadForm();
+           
+        }
         #endregion
 
         #region callback
         public void Btn_OnClick(object sender, EventArgs e) {
             Debug.WriteLine("Btn Click CallBack");
             var btn = (Button)sender;
-            switch (btn.Name) {
-                case "BtnGenerate":
-                    Debug.WriteLine("BtnGenerate Click CallBack");
-                    new ClassGeneratorForm().Show();
-                    break;
-                case "BtnAdd":
-                    Debug.WriteLine("BtnAdd Click CallBack");
-                    new EmployeeUpdateForm().Show();
-                    break;
+            if (btn.Name.Contains("BtnUpdate"))
+            {
+                string id = btn.Name.Replace("BtnUpdate_", "");
+                Debug.WriteLine("btn update id = " + id);
+                var form  = new EmployeeUpdateForm(id);
+                form.ShowDialog();
+                this.ReloadForm();
+
+            } else if (btn.Name.Contains("BtnDelete"))
+            {
+                string id = btn.Name.Replace("BtnDelete_", "");
+                Debug.WriteLine("btn delete id = " + id);
+                var result = MessageBox.Show(this, string.Format("Are you sure to delete the employee {0}", id), "Delete", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    _employeeService.DeleteById(id);
+                    ReloadForm();
+                }
+            } else
+            {
+                switch (btn.Name) {
+                    case "BtnGenerate":
+                        Debug.WriteLine("BtnGenerate Click CallBack");
+                        new ClassGeneratorForm().ShowDialog();
+                        break;
+                    case "BtnAdd":
+                        Debug.WriteLine("BtnAdd Click CallBack");
+                        new EmployeeUpdateForm().ShowDialog();
+                        this.ReloadForm();
+                        break;
+                }
             }
+            
         }
+
+      
+
         #endregion
     }
 }
