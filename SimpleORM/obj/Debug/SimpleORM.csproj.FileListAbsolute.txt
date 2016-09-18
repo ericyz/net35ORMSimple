@@ -1,8 +1,0 @@
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\SimpleORM.dll
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\SimpleORM.pdb
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Data.dll
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\bin\Debug\Microsoft.Practices.ObjectBuilder2.dll
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\obj\Debug\SimpleORM.dll
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\obj\Debug\SimpleORM.pdb
-C:\Users\Robin\documents\visual studio 2015\Projects\SimpleORM\SimpleORM\obj\Debug\SimpleORM.csprojResolveAssemblyReference.cache
